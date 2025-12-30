@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}"> <head>
+    <title>Liste des Élèves</title>
+</head>
+<body>
+<div layout:fragment="content1">
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+            <h4 class="mb-0 text-primary"><i class="fas fa-list"></i> Liste des Élèves</h4>
+            <a th:href="@{/formEleve}" class="btn btn-success"><i class="fas fa-plus"></i> Nouveau</a>
+        </div>
+
+        <div class="card-body">
+            <form method="get" th:action="@{/eleves}" class="row g-3 mb-4">
+                <div class="col-auto">
+                    <input type="text" name="keyword" class="form-control"
+                           th:value="${keyword}" placeholder="Rechercher...">
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary mb-3">Chercher</button>
+                </div>
+            </form>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Filière</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="e : ${listEleves}">
+                        <td th:text="${e.id}" class="fw-bold text-muted"></td>
+                        <td th:text="${e.nom}" class="fw-bold"></td>
+                        <td th:text="${e.prenom}"></td>
+
+                        <td>
+                            <span th:if="${e.filiere != null}" class="badge bg-info text-dark" th:text="${e.filiere.code}"></span>
+                            <span th:if="${e.filiere == null}" class="badge bg-danger">Non assigné</span>
+                        </td>
+
+                        <td class="text-end">
+                            <a th:href="@{/detailEleve(id=${e.id})}" class="btn btn-sm btn-outline-info" title="Détails"><i class="fas fa-eye"></i></a>
+                            <a th:href="@{/editEleve(id=${e.id})}" class="btn btn-sm btn-outline-warning" title="Modifier"><i class="fas fa-edit"></i></a>
+                            <a onclick="return confirm('Êtes-vous sûr ?')"
+                               th:href="@{/deleteEleve(id=${e.id})}" class="btn btn-sm btn-outline-danger" title="Supprimer"><i class="fas fa-trash"></i></a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

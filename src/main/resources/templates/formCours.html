@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">
+<head>
+    <title>Saisie Cours</title>
+</head>
+<body>
+<div layout:fragment="content1">
+    <div class="col-md-6 offset-md-3">
+        <div class="card">
+            <div class="card-header bg-info text-white">Saisie Cours</div>
+            <div class="card-body">
+
+                <form method="post" th:action="@{/saveCours}" th:object="${cours}">
+                    <input type="hidden" th:field="*{id}">
+
+                    <div class="mb-3">
+                        <label>Code du Cours</label>
+                        <input type="text" class="form-control" th:field="*{code}" placeholder="ex: JAVA_101" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Intitulé</label>
+                        <input type="text" class="form-control" th:field="*{intitule}" placeholder="ex: Programmation Java" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Filière</label>
+                        <select name="filiereID" class="form-select" required>
+                            <option value="" disabled selected>-- Choisir --</option>
+                            <option th:each="f : ${filieres}"
+                                    th:value="${f.id}"
+                                    th:text="${f.nom}"
+                                    th:selected="${cours.filiere != null && cours.filiere.id == f.id}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-success">Valider</button>
+                    <a th:href="@{/cours}" class="btn btn-secondary">Annuler</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

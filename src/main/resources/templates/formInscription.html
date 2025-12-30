@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">
+<head>
+    <title>Inscription Cours</title>
+</head>
+<body>
+<div layout:fragment="content1">
+    <div class="col-md-6 offset-md-3">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4><i class="fas fa-pen-alt"></i> Inscription Pédagogique</h4>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Élève : <span th:text="${eleve.nom} + ' ' + ${eleve.prenom}"></span></h5>
+
+                <p class="text-muted">
+                    Filière de rattachement :
+                    <span class="badge bg-info text-dark"
+                          th:text="${eleve.filiere != null ? eleve.filiere.nom : 'AUCUNE'}"></span>
+                </p>
+
+                <div th:if="${coursDisponibles.isEmpty()}" class="alert alert-warning">
+                    <i class="fas fa-exclamation-circle"></i>
+                    Aucun cours disponible pour cette filière (ou l'étudiant est déjà inscrit à tout).
+                    <br>
+                    <a th:href="@{/detailEleve(id=${eleve.id})}" class="btn btn-sm btn-outline-dark mt-2">Retour</a>
+                </div>
+
+                <form th:unless="${coursDisponibles.isEmpty()}" method="post" th:action="@{/saveInscription}">
+                    <input type="hidden" name="idEleve" th:value="${eleve.id}">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Choisir un cours :</label>
+                        <select name="idCours" class="form-select" required>
+                            <option value="" disabled selected>-- Cours de la filière <span th:text="${eleve.filiere.code}"></span> --</option>
+
+                            <option th:each="c : ${coursDisponibles}"
+                                    th:value="${c.id}"
+                                    th:text="${c.code} + ' - ' + ${c.intitule}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a th:href="@{/detailEleve(id=${eleve.id})}" class="btn btn-secondary">Annuler</a>
+                        <button type="submit" class="btn btn-success">Confirmer l'inscription</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

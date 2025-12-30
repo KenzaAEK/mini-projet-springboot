@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">
+<head>
+    <title>Formulaire Filière</title>
+</head>
+<body>
+<div layout:fragment="content1">
+    <div class="col-md-6 offset-md-3">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 th:text="${filiere.id == null ? 'Nouvelle Filière' : 'Édition Filière'}"></h4>
+            </div>
+            <div class="card-body">
+                <form method="post" th:action="@{/saveFiliere}" th:object="${filiere}">
+
+                    <input type="hidden" th:field="*{id}">
+
+                    <div class="mb-3">
+                        <label class="form-label">Code</label>
+                        <input type="text" class="form-control" th:field="*{code}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Nom</label>
+                        <input type="text" class="form-control" th:field="*{nom}" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-success">Enregistrer</button>
+                    <a th:href="@{/filieres}" class="btn btn-secondary">Annuler</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

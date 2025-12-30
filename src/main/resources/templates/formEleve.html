@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">
+<head>
+    <title>Saisie Élève</title>
+</head>
+<body>
+<div layout:fragment="content1">
+    <div class="col-md-6 offset-3">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 th:text="${eleve.id == null ? 'Nouvel Élève' : 'Modifier Élève'}"></h4>
+            </div>
+            <div class="card-body">
+
+                <form method="post" th:action="@{/saveEleve}" th:object="${eleve}">
+                    <input type="hidden" th:field="*{id}">
+
+                    <div class="mb-3">
+                        <label>Nom</label>
+                        <input type="text" class="form-control" th:field="*{nom}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Prénom</label>
+                        <input type="text" class="form-control" th:field="*{prenom}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Filière</label>
+                        <select name="filiereID" class="form-select" required>
+                            <option value="" disabled selected>-- Choisir Filière --</option>
+                            <option th:each="f : ${filieres}"
+                                    th:value="${f.id}"
+                                    th:text="${f.nom}"
+                                    th:selected="${eleve.filiere != null && eleve.filiere.id == f.id}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                    <a th:href="@{/eleves}" class="btn btn-secondary">Annuler</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

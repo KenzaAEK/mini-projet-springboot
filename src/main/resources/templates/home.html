@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">
+<head>
+    <title>Accueil</title>
+</head>
+<body>
+<div layout:fragment="content1">
+
+    <div class="p-5 mb-4 bg-light rounded-3 shadow-sm text-center">
+        <h1 class="display-5 fw-bold text-primary">Bienvenue sur School App</h1>
+        <p class="col-md-8 fs-4 mx-auto">Gérez votre établissement scolaire, vos étudiants et vos programmes académiques en toute simplicité.</p>
+    </div>
+
+    <div class="row align-items-md-stretch">
+        <div class="col-md-4">
+            <div class="h-100 p-5 text-white bg-dark rounded-3">
+                <h2><i class="fas fa-user-graduate"></i> Étudiants</h2>
+                <p>Gérez les inscriptions, visualisez les dossiers et modifiez les profils étudiants.</p>
+                <a th:href="@{/eleves}" class="btn btn-outline-light" type="button">Gérer les Élèves</a>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="h-100 p-5 bg-light border rounded-3">
+                <h2><i class="fas fa-book"></i> Cours</h2>
+                <p>Consultez le catalogue des cours, les volumes horaires et les affectations.</p>
+                <a th:href="@{/cours}" class="btn btn-outline-secondary" type="button">Voir les Cours</a>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="h-100 p-5 text-white bg-primary rounded-3">
+                <h2><i class="fas fa-sitemap"></i> Filières</h2>
+                <p>Structurez l'école par départements et gérez les filières académiques.</p>
+                <a th:href="@{/filieres}" class="btn btn-light text-primary" type="button">Gérer Filières</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

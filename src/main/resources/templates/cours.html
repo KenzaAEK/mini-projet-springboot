@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">
+<head>
+    <title>Liste des Cours</title>
+</head>
+<body>
+<div layout:fragment="content1">
+    <div class="d-flex justify-content-between mb-3">
+        <h2>Catalogue des Cours</h2>
+        <a th:href="@{/formCours}" class="btn btn-primary">Nouveau Cours</a>
+    </div>
+
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Code</th>
+            <th>Intitulé</th>
+            <th>Filière</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="c : ${listCours}">
+            <td th:text="${c.id}"></td>
+
+            <td th:text="${c.code}" class="fw-bold"></td>
+            <td th:text="${c.intitule}"></td>
+
+            <td th:text="${c.filiere != null ? c.filiere.nom : 'Non assigné'}"
+                th:classappend="${c.filiere == null ? 'text-danger fst-italic' : ''}">
+            </td>
+
+            <td>
+                <a th:href="@{/editCours(id=${c.id})}" class="btn btn-warning btn-sm" title="Modifier">
+                    <i class="fas fa-edit"></i>
+                </a>
+
+                <a onclick="return confirm('Supprimer ce cours ?')"
+                   th:href="@{/deleteCours(id=${c.id})}" class="btn btn-danger btn-sm" title="Supprimer">
+                    <i class="fas fa-trash"></i>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
