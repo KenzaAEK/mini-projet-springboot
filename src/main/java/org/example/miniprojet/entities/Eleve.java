@@ -13,6 +13,9 @@ public class Eleve {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) // auto-incremenet
     private Long id;
 
+    @Column(unique = true, updatable = false)
+    private String codeApogee; // ID Métier
+
     private String nom;
     private String prenom;
 

@@ -20,10 +20,8 @@ public class EleveService {
 
     private final EleveRepository eleveRepository;
     private final FiliereRepository filiereRepository;
-    private final DossierService dossierService; // Ton service qui génère le string "INFO-2025-..."
+    private final DossierService dossierService;
     private final CoursRepository coursRepository;
-
-    // --- LECTURE (READ) ---
 
     public List<Eleve> getAllEleves() {
         return eleveRepository.findAll();
@@ -35,56 +33,53 @@ public class EleveService {
     }
 
     public List<Eleve> chercherEleves(String keyword) {
-        // Recherche partielle (LIKE %...%)
-        return eleveRepository.findByNomContains(keyword);
+        // On passe le même mot-clé 3 fois pour vérifier les 3 champs
+        return eleveRepository.findByNomContainingIgnoreCaseOrPrenomContainingIgnoreCaseOrCodeApogeeContainingIgnoreCase(
+                keyword, keyword, keyword
+        );
     }
-
-    // --- CRÉATION (AVEC DOSSIER AUTO) ---
 
     @Transactional
     public Eleve ajouterEleve(Eleve eleve, Long idFiliere) {
-        // 1. Récupérer et associer la filière
+        // Récupération de la filière
         Filiere filiere = filiereRepository.findById(idFiliere)
                 .orElseThrow(() -> new RuntimeException("Filière introuvable"));
         eleve.setFiliere(filiere);
 
-        // 2. Sauvegarder une première fois pour générer l'ID technique
-        Eleve eleveSauvegarde = eleveRepository.save(eleve);
+        // Génération du Code Apogée (Métier)
+        String codeApogee = String.valueOf((long) (Math.random() * 90000000) + 10000000);
+        eleve.setCodeApogee(codeApogee);
 
-        // 3. Créer le dossier administratif
+        // Préparation du Dossier Administratif
         DossierAdministratif dossier = new DossierAdministratif();
         dossier.setDateCreation(LocalDate.now());
 
-        // 4. Générer le numéro d'inscription formaté (Ex: INFO-2025-12)
-        String numero = dossierService.genererNumeroInscription(filiere.getCode(), eleveSauvegarde.getId());
-        dossier.setNumeroInscription(numero);
+        // APPEL AU SERVICE DÉDIÉ (Délégation de la logique de formatage)
+        String numeroDossier = dossierService.genererNumeroInscription(filiere.getCode(), codeApogee);
 
-        // 5. Lier le dossier et sauvegarder la mise à jour
-        eleveSauvegarde.setDossierAdministratif(dossier);
-        return eleveRepository.save(eleveSauvegarde);
+        dossier.setNumeroInscription(numeroDossier);
+
+        // Liaison et Sauvegarde en cascade
+        // Grâce à CascadeType.ALL dans l'entité Eleve, sauvegarder l'élève sauvegarde aussi le dossier.
+        eleve.setDossierAdministratif(dossier);
+
+        return eleveRepository.save(eleve);
     }
-
-    // --- MODIFICATION (SANS ÉCRASER LE DOSSIER) ---
 
     @Transactional
     public void modifierEleve(Eleve eleveFormulaire, Long idFiliere) {
-        // 1. On récupère l'élève original en base
+        // On récupère l'élève original en base
         Eleve eleveEnBase = getEleveById(eleveFormulaire.getId());
-
-        // 2. On met à jour les infos simples
+        // On met à jour les infos simples
         eleveEnBase.setNom(eleveFormulaire.getNom());
         eleveEnBase.setPrenom(eleveFormulaire.getPrenom());
-
-        // 3. On met à jour la filière
+        // On met à jour la filière
         Filiere filiere = filiereRepository.findById(idFiliere)
                 .orElseThrow(() -> new RuntimeException("Filière introuvable"));
         eleveEnBase.setFiliere(filiere);
-
-        // 4. On sauvegarde (le dossier administratif et les cours restent attachés)
+        // On sauvegarde (le dossier administratif et les cours restent attachés)
         eleveRepository.save(eleveEnBase);
     }
-
-    // --- GESTION DES COURS (INSCRIPTION / DÉSINSCRIPTION) ---
 
     @Transactional
     public void inscrireEleveAuCours(Long idEleve, Long idCours) {
@@ -94,8 +89,8 @@ public class EleveService {
 
         // Vérification anti-doublon
         if (eleve.getCours().contains(cours)) {
-            // Optionnel : tu peux lancer une erreur ou juste ignorer
-            // Ici on ignore pour ne pas faire planter l'appli si on clique deux fois
+            // A faire apres : lancer une erreur
+            // pour le moment on va ignorer pour ne pas planter
             return;
         }
 
@@ -108,13 +103,10 @@ public class EleveService {
         Eleve eleve = getEleveById(idEleve);
         Cours cours = coursRepository.findById(idCours)
                 .orElseThrow(() -> new RuntimeException("Cours introuvable"));
-
         // On retire le cours de la liste
         eleve.getCours().remove(cours);
         eleveRepository.save(eleve);
     }
-
-    // --- SUPPRESSION ---
 
     @Transactional
     public void supprimerEleve(Long id) {

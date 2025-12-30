@@ -34,17 +34,13 @@ public class CoursService {
 
     @Transactional
     public Cours ajouterCours(Cours cours, Long idFiliere) {
-        // 1. On vérifie d'abord que la filière existe
-        // Si l'ID est mauvais, on coupe tout de suite avec une erreur claire.
+        // On vérifie d'abord que la filière existe
         Filiere filiere = filiereRepository.findById(idFiliere)
                 .orElseThrow(() -> new RuntimeException("Impossible d'ajouter le cours : Filière introuvable"));
-
-        // 2. L'ASSOCIATION
-        // On dit à l'objet Cours : "Ta filière, c'est celle-ci".
-        // C'est indispensable car c'est l'entité Cours qui porte la clé étrangère 'filiere_id' en base.
+        // L'ASSOCIATION
+        // C'est indispensable car c'est Cours porte la clé étrangère 'filiere_id' en base.
         cours.setFiliere(filiere);
-
-        // 3. On sauvegarde
+        // On sauvegarde
         return coursRepository.save(cours);
     }
 

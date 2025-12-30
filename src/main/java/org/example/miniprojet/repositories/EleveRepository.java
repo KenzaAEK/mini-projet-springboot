@@ -6,11 +6,11 @@ import java.util.List;
 
 public interface EleveRepository extends JpaRepository<Eleve, Long> {
 
-    // 1. Recherche par mot clé (POUR LA BARRE DE RECHERCHE)
-    // "Contains" permet de trouver "Dupont" si on tape "Dup" (génère un LIKE %...% en SQL)
-    List<Eleve> findByNomContains(String mc);
+    // Recherche par nom et prenom et code apogee
+    List<Eleve> findByNomContainingIgnoreCaseOrPrenomContainingIgnoreCaseOrCodeApogeeContainingIgnoreCase(
+            String nom, String prenom, String codeApogee
+    );
 
-    // 2. Recherche par filière (POUR LES FILTRES)
-    // Spring navigue : Eleve -> attribut 'filiere' -> attribut 'id'
+    // Recherche par filière (POUR LES FILTRES)
     List<Eleve> findByFiliere_Id(Long idFiliere);
 }

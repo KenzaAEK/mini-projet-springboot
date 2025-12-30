@@ -20,7 +20,7 @@ public class EleveController {
     private final FiliereService filiereService;
     private final CoursService coursService;
 
-    // --- 1. LECTURE ET RECHERCHE ---
+    // LECTURE ET RECHERCHE
     @GetMapping("/eleves")
     public String index(Model model,
                         @RequestParam(name = "keyword", defaultValue = "") String keyword) {
@@ -40,7 +40,7 @@ public class EleveController {
         return "eleves";
     }
 
-    // --- 2. AFFICHAGE DÉTAILLÉ ---
+    // AFFICHAGE DÉTAILLÉ
     @GetMapping("/detailEleve")
     public String detailEleve(Model model, @RequestParam(name = "id") Long id) {
         // Le contrôleur récupère l'objet complet via le service
@@ -49,39 +49,31 @@ public class EleveController {
         return "detailEleve";
     }
 
-    // --- 3. PRÉPARATION AJOUT ---
+    // AJOUTER ELEVE
     @GetMapping("/formEleve")
     public String formEleve(Model model) {
-        // Instanciation d'un nouvel élève vide pour le binding du formulaire [cite: 42]
+        // Instanciation d'un nouvel élève vide pour le binding du formulaire
         model.addAttribute("eleve", new Eleve());
         // Chargement de la liste référentielle des filières pour le <select>
         model.addAttribute("filieres", filiereService.getAllFilieres());
         return "formEleve";
     }
 
-    // --- 4. PRÉPARATION MODIFICATION ---
+    // MODIFIER ELEVE
     @GetMapping("/editEleve")
     public String editEleve(Model model, @RequestParam(name = "id") Long id) {
         // Récupération de l'élève existant pour pré-remplissage automatique des champs (th:field)
         Eleve eleve = eleveService.getEleveById(id);
-
         model.addAttribute("eleve", eleve);
         // La liste des filières est toujours requise, même en modification
         model.addAttribute("filieres", filiereService.getAllFilieres());
-
-        return "formEleve"; // Réutilisation intelligente de la vue
+        return "formEleve"; // Réutilisation de la vue
     }
 
-    // --- 5. TRAITEMENT DU FORMULAIRE (ROUTAGE) ---
+    // TRAITEMENT DU FORMULAIRE
     @PostMapping("/saveEleve")
     public String save(@ModelAttribute("eleve") Eleve eleve,
                        @RequestParam("filiereID") Long idFiliere) {
-
-        // Routage Métier :
-        // Le contrôleur analyse l'état de l'objet (ID présent ou non) pour diriger
-        // vers la bonne méthode de service. Cela respecte le principe de séparation :
-        // Le contrôleur "dirige", le service "exécute".
-
         if (eleve.getId() == null) {
             // Cas création : Appel d'une méthode transactionnelle lourde (création dossier, etc.)
             eleveService.ajouterEleve(eleve, idFiliere);
@@ -89,8 +81,7 @@ public class EleveController {
             // Cas modification : Appel d'une méthode de mise à jour ciblée (préservation dossier)
             eleveService.modifierEleve(eleve, idFiliere);
         }
-
-        return "redirect:/eleves"; //
+        return "redirect:/eleves";
     }
 
     @GetMapping("/formInscription")
@@ -112,7 +103,7 @@ public class EleveController {
         return "formInscription";
     }
 
-    // C'EST CETTE MÉTHODE QUI MANQUAIT ET CAUSAIT L'ERREUR 404
+    // ENREGISTRER L'INSCRIPTION
     @PostMapping("/saveInscription")
     public String saveInscription(@RequestParam(name = "idEleve") Long idEleve,
                                   @RequestParam(name = "idCours") Long idCours) {
@@ -128,7 +119,7 @@ public class EleveController {
         return "redirect:/detailEleve?id=" + idEleve;
     }
 
-    // --- 6. SUPPRESSION ---
+    // SUPRRIMER ELEVE
     @GetMapping("/deleteEleve")
     public String delete(@RequestParam(name = "id") Long id) {
         eleveService.supprimerEleve(id);

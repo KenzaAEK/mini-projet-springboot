@@ -13,14 +13,14 @@ public class FiliereController {
 
     private final FiliereService filiereService;
 
-    // --- LECTURE (READ) ---
+    // LECTURE FILIERE
     @GetMapping("/filieres")
     public String index(Model model) {
         model.addAttribute("listFilieres", filiereService.getAllFilieres());
         return "filieres";
     }
 
-    // --- FORMULAIRE D'AJOUT (CREATE) ---
+    // AJOUTER FILIERE
     @GetMapping("/formFiliere")
     public String formFiliere(Model model) {
         // On respecte la règle du cours : objet vide pour le binding
@@ -28,7 +28,7 @@ public class FiliereController {
         return "formFiliere";
     }
 
-    // --- FORMULAIRE D'ÉDITION (UPDATE) ---
+    // MODIFIER FILIERE
     @GetMapping("/editFiliere")
     public String editFiliere(Model model, @RequestParam(name = "id") Long id) {
         // Récupération via le service (qui contient maintenant getFiliereById)
@@ -37,7 +37,7 @@ public class FiliereController {
         return "formFiliere";
     }
 
-    // --- SAUVEGARDE (CREATE & UPDATE) ---
+    // ENREGISTRER FILIERE
     @PostMapping("/saveFiliere")
     public String save(@ModelAttribute("filiere") Filiere filiere) {
         // @ModelAttribute gère automatiquement la récupération des données du formulaire
@@ -45,6 +45,7 @@ public class FiliereController {
         return "redirect:/filieres";
     }
 
+    // LECTURE ELEVES ET COURS ASSOCIES A LA FILLIERE
     @GetMapping("/detailFiliere")
     public String detailFiliere(Model model, @RequestParam(name = "id") Long id) {
         // On récupère la filière.
@@ -54,13 +55,10 @@ public class FiliereController {
         return "detailFiliere";
     }
 
-    // --- SUPPRESSION (DELETE - Version "Set Null") ---
+    // SUPPRIMER FILLIERE
     @GetMapping("/deleteFiliere")
     public String delete(@RequestParam(name = "id") Long id) {
-        // Plus besoin de try-catch !
-        // Le service va automatiquement détacher les élèves (set null) avant de supprimer.
         filiereService.deleteFiliere(id);
-
         return "redirect:/filieres";
     }
 }

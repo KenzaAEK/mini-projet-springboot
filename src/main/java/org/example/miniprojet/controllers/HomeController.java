@@ -13,6 +13,6 @@ public class HomeController {
 
     @GetMapping("/home")
     public String home() {
-        return "home"; // Affiche le joli dashboard
+        return "home"; // Affiche DASHBOARD
     }
 }
