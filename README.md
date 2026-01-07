@@ -4,7 +4,8 @@
 
 Cette application Web permet de gérer une **école** avec 4 entités principales :  
 - Élève  
-- Filière  - Cours  
+- Filière
+- Cours  
 - Dossier Administratif  
 
 **Objectifs :**  
